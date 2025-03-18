@@ -1,0 +1,8 @@
+angle = 25
+iterations = 4
+initiator = F
+
+Rules = {
+    F -> 0.7 "F+F-F"
+    F -> 0.3 "F-F+F"
+}
