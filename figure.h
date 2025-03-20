@@ -42,7 +42,7 @@ public:
 
 
     Matrix computeMatrix(const double scale, const double angleX, const double angleY, const double angleZ,
-                                 const Vector3D &vector);
+                                 const Vector3D &vector,Matrix& eyePoint);
 
     Matrix eyePointTrans(const Vector3D& eyePoint);
 

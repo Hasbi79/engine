@@ -94,8 +94,8 @@ Matrix figure::translatie(const Vector3D &vector) {
 }
 
 Matrix figure::computeMatrix(const double scale, const double angleX, const double angleY, const double angleZ,
-                             const Vector3D &vector) {
-    return scalefigure(scale) * rotateX(angleX) * rotateY(angleY) * rotateZ(angleZ) * translatie(vector);
+                             const Vector3D &vector,Matrix& eyePoint) {
+    return scalefigure(scale) * rotateX(angleX) * rotateY(angleY) * rotateZ(angleZ) * translatie(vector) * eyePoint;
 
 }
 
@@ -103,7 +103,7 @@ Matrix figure::computeMatrix(const double scale, const double angleX, const doub
 void figure::applyTransformation(figure &fig, const Matrix &m) {
 
     for(auto & p: fig.points){
-        p *= m;
+        p = p * m;
     }
 
 }

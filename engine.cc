@@ -9,14 +9,19 @@
 #include "gegevenClasses/l_parser.h"
 #include "algorithm"
 
-#include "gegevenClasses/vector3d.h"
 #include "stack"
 
-#include "figure.h"
 
 struct Line2D {
     double x1, y1,x2,y2;
 };
+
+
+using Lines2D = std::vector<Line2D>;
+
+
+
+
 
 img::EasyImage draw2DLines(std::vector<Line2D> lines, const int size,
                            const std::vector<double>& bgCcolor,
@@ -184,21 +189,24 @@ img::EasyImage readl2Dlines(const std::string filename, int size,
 }
 
 
+
+
+
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
-    std::string filename = configuration["2DLSystem"]["inputfile"].as_string_or_die();
-    int size = configuration["General"]["size"].as_int_or_default(500);
-
     std::string type = configuration["General"]["type"].as_string_or_die();
+    int size = configuration["General"]["size"].as_int_or_default(500);
     std::vector<double> bgColor = configuration["General"]["backgroundcolor"].as_double_tuple_or_default({255,255,255});
-    std::vector<double> lineColor = configuration["2DLSystem"]["color"].as_double_tuple_or_default({0,0,0});
 
-    if(type == "2DLSystem"){
-        return readl2Dlines(filename,size,bgColor,lineColor);
+    if (type == "2DLSystem") {
+        std::string filename = configuration["2DLSystem"]["inputfile"].as_string_or_die();
+        std::vector<double> lineColor = configuration["2DLSystem"]["color"].as_double_tuple_or_default({0,0,0});
+        return readl2Dlines(filename, size, bgColor, lineColor);
     }
-//    if(type == "line_drawings"){
-//
-//    }
+    if(type == "line_drawings"){
+
+
+    }
 
     return img::EasyImage();
 }
