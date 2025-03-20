@@ -6,14 +6,18 @@
 #define ENGINE_FIGURE_H
 
 #include "iostream"
-#include "vector3d.h"
+#include "gegevenClasses/vector3d.h"
+
 #include "face.h"
+#include "list"
+
+
 
 class figure {
-public:
-
+private:
     std::vector<Vector3D> points; // Alle punten in de figuur
     std::vector<face> faces;       // Alle vlakken die naar punten verwijzen
+public:
 
     // Constructor
     figure();
@@ -23,6 +27,26 @@ public:
 
     // Methode om een vlak toe te voegen (met indices naar punten)
     void addFace(const std::vector<int>& indices);
+
+    Matrix scalefigure(const double scale);
+
+    Matrix rotateX(const double angle);
+    Matrix rotateY(const double angle);
+    Matrix rotateZ(const double angle);
+
+    Matrix translatie( const Vector3D & vector);
+
+    void applyTransformation(figure& fig, const Matrix & m);
+
+    static void toPolar(const Vector3D &point, double &theta, double &phi, double &r) ;
+
+
+    Matrix computeMatrix(const double scale, const double angleX, const double angleY, const double angleZ,
+                                 const Vector3D &vector);
+
+    Matrix eyePointTrans(const Vector3D& eyePoint);
+
+
 
 
 };

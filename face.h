@@ -8,6 +8,7 @@
 #include "iostream"
 #include "vector"
 
+
 class face {
 public:
     std::vector<int> point_indexes;
@@ -15,7 +16,7 @@ public:
     face(const std::vector<int>& indices);
 
 
-
+    const std::vector<int>& getPointIndexes() const ;
 
 
 };

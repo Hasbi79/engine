@@ -5,4 +5,10 @@
 #include "face.h"
 
 
-face::face(const std::vector<int>& indices) : point_indexes(indices) {}
+face::face(const std::vector<int>& indices) : point_indexes(indices) {
+    point_indexes = indices;
+}
+
+const std::vector<int>& face::getPointIndexes() const {
+    return point_indexes;
+}

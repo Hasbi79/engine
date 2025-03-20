@@ -15,11 +15,11 @@ set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${OWN_GXX_FLAGS}")
 # List all sources
 ############################################################
 set(engine_sources
-        easy_image.cc
+        gegevenClasses/easy_image.cc
         engine.cc
-        ini_configuration.cc
-        l_parser.cc
-        vector3d.cc
+        gegevenClasses/ini_configuration.cc
+        gegevenClasses/l_parser.cc
+        gegevenClasses/vector3d.cc
         face.cpp
         face.h
         figure.cpp

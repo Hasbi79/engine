@@ -1,8 +1,22 @@
 # ninja log v6
-2	71	1742335231198336817	build.ninja	d194ad5ea1546377
-4	477	1742334201589874038	CMakeFiles/engine.dir/engine.cc.o	51eb243badb1fb0e
-4	410	1742334201590103328	CMakeFiles/engine.dir/l_parser.cc.o	fbe186647af9ed23
-3	325	1742334201589574332	CMakeFiles/engine.dir/easy_image.cc.o	3170de8a9ddf1509
+3	255	1742432478890185035	CMakeFiles/engine.dir/face.cpp.o	95fd4f68c60c4e77
+7	457	1742416036825111661	CMakeFiles/engine.dir/mainTest.cpp.o	7dd101d6f769ba6d
 4	296	1742334201590204702	CMakeFiles/engine.dir/vector3d.cc.o	ab49fb23c8de00bf
+3	325	1742334201589574332	CMakeFiles/engine.dir/easy_image.cc.o	3170de8a9ddf1509
+4	523	1742432679844369941	CMakeFiles/engine.dir/l_parser.cc.o	fbe186647af9ed23
 4	459	1742334201589996246	CMakeFiles/engine.dir/ini_configuration.cc.o	7cf0838ebd76ef10
-477	503	1742334202063301501	engine	f13a14e2700e2d80
+4	312	1742435964650622402	CMakeFiles/engine.dir/figure.cpp.o	549b5deb3e5e8a12
+3	476	1742435964650503776	CMakeFiles/engine.dir/engine.cc.o	51eb243badb1fb0e
+476	568	1742435965123063708	engine	44054f85f06faaab
+2	58	1742436029570138509	build.ninja	d194ad5ea1546377
+3	317	1742435964650237317	CMakeFiles/engine.dir/gegevenClasses/easy_image.cc.o	cc9a36e93e140144
+15	366	1742436048767045783	CMakeFiles/engine.dir/gegevenClasses/vector3d.cc.o	b977b56c54cfc975
+15	399	1742436048767168450	CMakeFiles/engine.dir/figure.cpp.o	549b5deb3e5e8a12
+15	474	1742436048766931991	CMakeFiles/engine.dir/gegevenClasses/l_parser.cc.o	ecf5acd000181dc9
+14	528	1742436048766773657	CMakeFiles/engine.dir/gegevenClasses/ini_configuration.cc.o	f222adf2c2aac861
+14	561	1742436048766369406	CMakeFiles/engine.dir/engine.cc.o	51eb243badb1fb0e
+561	592	1742436049313124235	engine	ee1660790f1b794b
+7	443	1742436608227634531	CMakeFiles/engine.dir/face.cpp.o	95fd4f68c60c4e77
+7	477	1742436608227785239	CMakeFiles/engine.dir/figure.cpp.o	549b5deb3e5e8a12
+6	660	1742436608226727909	CMakeFiles/engine.dir/engine.cc.o	51eb243badb1fb0e
+660	753	1742436608880683918	engine	ee1660790f1b794b
