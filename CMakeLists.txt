@@ -20,10 +20,10 @@ set(engine_sources
         gegevenClasses/ini_configuration.cc
         gegevenClasses/l_parser.cc
         gegevenClasses/vector3d.cc
-        face.cpp
-        face.h
-        figure.cpp
-        figure.h
+        dataStructures.cpp
+        dataStructures.h
+        Projection.cpp
+        Projection.h
 )
 
 ############################################################

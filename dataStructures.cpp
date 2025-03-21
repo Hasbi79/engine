@@ -1,25 +1,13 @@
 //
-// Created by Hassane Balde on 18/03/2025.
+// Created by hassa on 21/03/2025.
 //
 
-#include "figure.h"
+#include "dataStructures.h"
+
 #include "cmath"
 
-// Constructor: Maak een lege figuur
-figure::figure() = default;
 
-// Methode om een punt toe te voegen
-void figure::addPoint(const Vector3D& point) {
-    points.push_back(point);
-}
-
-
-// Methode om een vlak toe te voegen
-void figure::addFace(const std::vector<int>& indices) {
-    faces.emplace_back(indices);
-}
-
-Matrix figure::scalefigure(const double scale) {
+Matrix Figure::scalefigure(const double scale) {
     Matrix scaleMatrix;
 
     scaleMatrix(1,1) = scale;
@@ -30,8 +18,9 @@ Matrix figure::scalefigure(const double scale) {
     return  scaleMatrix;
 }
 
-Matrix figure::rotateX(const double angle) {
+Matrix Figure::rotateX(const double angle) {
     Matrix rotateMatrixX;
+
     double cosinusAngle = cos(angle);
     double sinusAngle = sin(angle);
     double minusSinusAngle = -sin(angle);
@@ -39,14 +28,14 @@ Matrix figure::rotateX(const double angle) {
     rotateMatrixX(1,1) = 1;
     rotateMatrixX(2,2) = cosinusAngle;
     rotateMatrixX(3,3) = cosinusAngle;
-    rotateMatrixX(2,3) = minusSinusAngle;
-    rotateMatrixX(3,2) = sinusAngle;
+    rotateMatrixX(3,2) = minusSinusAngle;
+    rotateMatrixX(2,3) = sinusAngle;
     rotateMatrixX(4,4) = 1;
 
     return rotateMatrixX;
 }
 
-Matrix figure::rotateY(const double angle) {
+Matrix Figure::rotateY(const double angle) {
     Matrix rotateMatrixy;
 
     double cosinusAngle = cos(angle);
@@ -62,7 +51,7 @@ Matrix figure::rotateY(const double angle) {
     return rotateMatrixy;
 }
 
-Matrix figure::rotateZ(const double angle) {
+Matrix Figure::rotateZ(const double angle) {
     Matrix rotateMatrixZ;
 
     double cosinusAngle = cos(angle);
@@ -79,7 +68,8 @@ Matrix figure::rotateZ(const double angle) {
     return rotateMatrixZ;
 }
 
-Matrix figure::translatie(const Vector3D &vector) {
+Matrix Figure::translatie_matrix(const Vector3D &vector) {
+
     Matrix translatieMatrix;
 
     translatieMatrix(1,1) = 1;
@@ -93,26 +83,32 @@ Matrix figure::translatie(const Vector3D &vector) {
     return translatieMatrix;
 }
 
-Matrix figure::computeMatrix(const double scale, const double angleX, const double angleY, const double angleZ,
-                             const Vector3D &vector,Matrix& eyePoint) {
-    return scalefigure(scale) * rotateX(angleX) * rotateY(angleY) * rotateZ(angleZ) * translatie(vector) * eyePoint;
 
+Matrix Figure::computeMatrix(const double scale, const double angleX, const double angleY, const double angleZ, const Vector3D &vector, Matrix &eyePoint) {
+    return scalefigure(scale) * rotateX(angleX) * rotateY(angleY) * rotateZ(angleZ) * translatie_matrix(vector) * eyePoint;
 }
 
 
-void figure::applyTransformation(figure &fig, const Matrix &m) {
+void Figure::applyTransformation(const Matrix &m) {
 
-    for(auto & p: fig.points){
+    for (auto & p: this->points) {
         p = p * m;
     }
-
 }
 
 
-Matrix figure::eyePointTrans(const Vector3D &eyePoint) {
+void applyTransformationToFigures(Figures3D &figures, const Matrix &m) {
+    for (auto & fig: figures) {
+        fig.applyTransformation(m);
+    }
+}
+
+
+
+Matrix Figure::eyePointTrans(const Vector3D &eyePoint) {
 
     double theta, phi, r;
-    toPolar(eyePoint, theta, phi, r);
+    eyePointHelpFunctiontoPolar(eyePoint, theta, phi, r);
 
     // Maak een identiteitsmatrix
     Matrix V;
@@ -139,9 +135,7 @@ Matrix figure::eyePointTrans(const Vector3D &eyePoint) {
 
 }
 
-
-
-void figure::toPolar(const Vector3D &point, double &theta, double &phi, double &r) {
+void Figure::eyePointHelpFunctiontoPolar(const Vector3D &point, double &theta, double &phi, double &r) {
     // Stap 1: Bereken r
     r = std::sqrt(point.x * point.x + point.y * point.y + point.z * point.z);
 
@@ -152,8 +146,4 @@ void figure::toPolar(const Vector3D &point, double &theta, double &phi, double &
     phi = std::acos(point.z / r);
 
 }
-
-
-
-
 

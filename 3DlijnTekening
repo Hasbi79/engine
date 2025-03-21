@@ -1,0 +1,100 @@
+# 3D Transformatie Pipeline - Engine Overzicht
+
+Transformeer een 3D-object:
+
+- Van zijn oorspronkelijke vorm (local space)
+- Naar zijn juiste positie in wereldruimte (world space)
+- Naar eye space (uitgelijnd met de camera)
+- Voorbereiden op projectie naar 2D
+
+────────────────────────────────────────────
+🔹 Stap 1: Bereken individuele transformatie-matrices
+
+Elke transformatie past het figuur op een andere manier aan:
+
+1️⃣ scalefigure(double scale)
+📌 Doel: maakt een schaalmatrix aan om het figuur groter of kleiner te maken.
+🧪 Werking: vermenigvuldigt elk coördinaat (x, y, z) met de schaalfactor.
+Wijzigt de grootte, maar niet de positie of oriëntatie.
+
+2️⃣ rotateX(angle), rotateY(angle), rotateZ(angle)
+📌 Doel: roteert het figuur rond de X-, Y- of Z-as.
+🧪 Werking:
+- rotateX: voor- en achterover kantelen
+- rotateY: links/rechts draaien
+- rotateZ: rotatie in XY-vlak (zoals een klok)
+💡 Rotatievolgorde is belangrijk:
+   ✅ rotateX → ✅ rotateY → ✅ rotateZ
+
+3️⃣ translatie_matrix(Vector3D translation)
+📌 Doel: verplaatst het figuur naar de juiste positie in de wereld.
+🧪 Werking: telt (x, y, z) op bij elk punt. Wijzigt NIET de grootte of rotatie.
+
+────────────────────────────────────────────
+🔹 Stap 2: Pas eye-transformatie toe
+
+Zodra het figuur op zijn plaats staat, wordt het uitgelijnd met de camera.
+
+4️⃣ eyePointHelpFunctiontoPolar(...)
+📌 Doel: zet cameracoördinaten om naar bolcoördinaten (r, θ, φ)
+🧪 Werking:
+- r = afstand tot oorsprong
+- θ = hoek in het XY-vlak
+- φ = hoek t.o.v. de Z-as
+
+5️⃣ eyePointTrans(Vector3D eyePoint)
+📌 Doel: maakt een matrix om het figuur zo te transformeren dat de camera op (0,0,0) staat en in de juiste richting kijkt.
+🧪 Werking:
+- roteert de scène zodat de camera kijkt langs -Z
+- translateert het hele figuur zodat het in 'eye space' zit
+
+────────────────────────────────────────────
+🔹 Stap 3: Combineer alle transformaties in één matrix
+
+6️⃣ computeMatrix(...)
+📌 Doel: combineert alle transformaties tot één matrix.
+🧪 Werking:
+   M = S ⋅ Rx ⋅ Ry ⋅ Rz ⋅ T ⋅ Eye
+💡 Volgorde is belangrijk:
+   ✅ Schalen (S)
+   ✅ Rotatie X, Y, Z
+   ✅ Translatie
+   ✅ Eye-transformatie
+
+Nu hebben we één matrix die alles in één keer doet.
+
+────────────────────────────────────────────
+🔹 Stap 4: Pas de transformatie toe
+
+7️⃣ applyTransformation(Figure &fig, const Matrix &m)
+📌 Doel: vermenigvuldigt alle punten van een figuur met matrix M.
+🧪 Werking:
+   p = M * p
+   Nu zijn de punten omgezet naar eye-space, klaar voor projectie.
+
+────────────────────────────────────────────
+🔹 Stap 5: Pas transformatie toe op alle figuren
+
+8️⃣ applyTransformation(Figures3D &figs, const Matrix &m)
+📌 Doel: past matrix M toe op alle figuren in de scène.
+🧪 Werking:
+   Voor elk figuur:
+      fig.applyTransformation(M);
+
+Zo staat alles klaar in eye space voor projectie naar 2D.
+
+────────────────────────────────────────────
+🔜 Volgende stap: Projectie
+
+Zodra de punten in eye space staan:
+Gebruik perspectiefprojectie:
+
+   x' = d * x / z
+   y' = d * y / z
+
+(d = 1.0)
+
+Gebruik de functie `doProjection(...)` om alle figuren om te zetten naar `Lines2D`.
+
+Daarna teken je met `draw2DLines(...)`.
+

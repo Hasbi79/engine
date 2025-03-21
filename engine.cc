@@ -1,216 +1,263 @@
 #include "gegevenClasses/easy_image.h"
 #include "gegevenClasses/ini_configuration.h"
 
+
 #include <fstream>
 #include <iostream>
-#include <stdexcept>
-#include <string>
 
+
+#include <limits>
 #include "gegevenClasses/l_parser.h"
+
+#include "dataStructures.h"
 #include "algorithm"
 
+#include "cmath"
 #include "stack"
 
+#include <string>
+#include "Projection.h"
 
-struct Line2D {
-    double x1, y1,x2,y2;
-};
+using namespace std;
 
-
-using Lines2D = std::vector<Line2D>;
-
-
-
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 
-img::EasyImage draw2DLines(std::vector<Line2D> lines, const int size,
-                           const std::vector<double>& bgCcolor,
-                           const std::vector<double>& lineColor )
-{
+
+img::EasyImage draw2DLines(const Lines2D & lines,  int size, const Color& backgroundColor) {
+
+    double Xmax = std::numeric_limits<double>::lowest();
+    double Xmin = std::numeric_limits<double>::max();
+    double Ymax = std::numeric_limits<double>::lowest();
+    double Ymin = std::numeric_limits<double>::max();
 
 
-    if (lines.empty()) {
-        std::cout << "er zijn geen lijnen " << "\n";
-        return img::EasyImage();
-    }
-    // bereken max en min van alle punten
-    double xmax = std::numeric_limits<double>::lowest();
-    double xmin = std::numeric_limits<double>::max();
-    double ymax = std::numeric_limits<double>::lowest();
-    double ymin = std::numeric_limits<double>::max();
 
     for (auto &line : lines) {
-        xmax = std::max({xmax, line.x1, line.x2});
-        xmin = std::min({xmin, line.x1, line.x2});
-        ymax = std::max({ymax, line.y1, line.y2});
-        ymin = std::min({ymin, line.y1, line.y2});
+        Xmin = std::min({Xmin, line.p1.x, line.p2.x});
+        Xmax = std::max({Xmax, line.p1.x, line.p2.x});
+        Ymax = std::max({Ymax, line.p1.y, line.p2.y});
+        Ymin = std::min({Ymin, line.p1.y, line.p2.y});
     }
+
     //bereken de ranges
-    double xrange  = xmax - xmin;
-    double yrange = ymax - ymin;
+    double xrange  = Xmax - Xmin;
+    double yrange = Ymax - Ymin;
 
-    double imagex = size * (xrange/ std::max(xrange,yrange));
-    double imagey = size * (yrange/ std::max(xrange,yrange));
+    double Imagex = size * (xrange / std::max(xrange, yrange));
+    double Imagey = size * (yrange / std::max(xrange, yrange));
     // schallfactor
-    double d = 0.95 * ( imagex /xrange );
+    double d = 0.95 * (Imagex / xrange);
 
-    for(auto & line : lines ){
-        line.x1 *= d;
-        line.x2 *= d;
-        line.y1 *= d;
-        line.y2 *= d;
-    }
+
     //middelpunt afbeelding
-    double DCx = (xmin + xmax) / 2 * d;
-    double DCy = (ymin + ymax) / 2 * d;
+    double DCx = (Xmin + Xmax) / 2 * d;
+    double DCy = (Ymin + Ymax) / 2 * d;
     // verschuiving
-    double dx  = (imagex / 2 ) - DCx;
-    double dy = (imagey / 2 ) - DCy;
+    double dx  = (Imagex / 2) - DCx;
+    double dy = (Imagey / 2) - DCy;
 
-    for(auto & line : lines ){
-        line.x1 += dx;
-        line.x2 += dx;
-        line.y1 += dy;
-        line.y2 += dy;
-        // rond de coordinaten van punten af
-        line.x1 = std::round(line.x1);
-        line.x2 = std::round(line.x2);
-        line.y1 = std::round(line.y1);
-        line.y2 = std::round(line.y2);
-    }
-    img::EasyImage image(imagex,imagey);
-    // achtergrond kleur toepassen
-    image.clear(img::Color(bgCcolor[0] * 255, bgCcolor[1] * 255, bgCcolor[2] * 255));
+    img::EasyImage image(Imagex, Imagey, img::Color(
+        backgroundColor.red * 255,
+        backgroundColor.green * 255,
+        backgroundColor.blue * 255
+    ));
+
 
     for (const auto& line : lines) {
-        image.draw_line(
-                static_cast<int>(line.x1), static_cast<int>(line.y1),
-                static_cast<int>(line.x2), static_cast<int>(line.y2),
-                img::Color(lineColor[0] * 255, lineColor[1] * 255, lineColor[2] * 255)
+        double x1 = line.p1.x * d + dx;
+        double y1 = line.p1.y * d + dy;
+        double x2 = line.p2.x * d + dx;
+        double y2 = line.p2.y * d + dy;
+
+        // Use each line's own color
+        img::Color lineImgColor(
+            line.color.red * 255,
+            line.color.green * 255,
+            line.color.blue * 255
         );
+
+        image.draw_line(x1, y1, x2, y2, lineImgColor);
     }
+
     return image;
 }
 
 
 
-img::EasyImage readl2Dlines(const std::string filename, int size,
-                            const std::vector<double> &bgColor,
-                            const std::vector<double> & lineColor){
+Figures3D generate3DFigures(const ini::Configuration & configuration) {
 
+    Figures3D figures;
+    vector<double> eyeValues = configuration["General"]["eye"].as_double_tuple_or_die();
+    Vector3D eye = Vector3D::point(eyeValues[0],eyeValues[1],eyeValues[2]);
+      Figure figure;
+    int nrFigures = configuration["General"]["nrFigures"].as_int_or_die();
+    for (int i = 0; i < nrFigures; i++) {
+
+        string figureName = "Figure" + to_string(i);
+
+        double rotateX = configuration[figureName]["rotateX"].as_double_or_die();
+        double rotateY = configuration[figureName]["rotateY"].as_double_or_die();
+        double rotateZ = configuration[figureName]["rotateZ"].as_double_or_die();
+        double scale = configuration[figureName]["scale"].as_double_or_die();
+
+        vector<double> centerValues = configuration[figureName]["center"].as_double_tuple_or_die();
+        Vector3D center = Vector3D::point(centerValues[0], centerValues[1], centerValues[2]);
+        vector<double> colorValues = configuration[figureName]["color"].as_double_tuple_or_die();
+        Color lineColor;
+        lineColor.red = colorValues[0];
+        lineColor.green = colorValues[1];
+        lineColor.blue = colorValues[2];
+
+        figure.color = lineColor;
+        int nrPoints = configuration[figureName]["nrPoints"].as_int_or_die();
+        for (int pointIndex = 0; pointIndex < nrPoints; pointIndex++) {
+
+            string pointNumber = "point" + to_string(pointIndex);
+            vector<double> pointValues = configuration[figureName][pointNumber].as_double_tuple_or_die();
+            figure.points.push_back(Vector3D::point(pointValues[0], pointValues[1], pointValues[2]));
+
+        }
+        int nrLines = configuration[figureName]["nrLines"].as_int_or_die();
+        for (int lineIndex = 0; lineIndex < nrLines; lineIndex++) {
+            string lineName = "line" + to_string(lineIndex);
+            vector<int> lineValues = configuration[figureName][lineName].as_int_tuple_or_die();
+
+            // Create a Face object for each line
+            Face lineFace;
+            lineFace.point_indexes.push_back(lineValues[0]); // First point index
+            lineFace.point_indexes.push_back(lineValues[1]); // Second point index
+
+            // Add the face to the figure
+            figure.faces.push_back(lineFace);
+
+        }
+
+        Matrix eyePointTrans = figure.eyePointTrans(eye);
+        Matrix computedMatrix = figure.computeMatrix(scale,rotateX,rotateY,rotateZ,center,eyePointTrans);
+
+        figure.applyTransformation(computedMatrix);
+
+        figures.push_back(figure);
+
+    }
+
+    return figures;
+
+}
+
+
+Lines2D generate2DLines(const ini::Configuration &configuration) {
+    // Load L-System config
+    std::string filename = configuration["2DLSystem"]["inputfile"];
     LParser::LSystem2D l_system;
 
-    // Open het L2D-bestand en laad de L-Systeem parameters
+
+    ini::DoubleTuple color = configuration ["2DLSystem"]["color"];
+    Color lineColor;
+    lineColor.red = color[0];
+    lineColor.green = color[1];
+    lineColor.blue = color[2];
+
+
     std::ifstream input_stream(filename);
-    if(!input_stream){
-        std::cerr<< "kan het bestand" << filename << "NIET OPENEN " << "\n";
+    if (!input_stream) {
+        std::cerr << "Kan het bestand " << filename << " NIET openen\n";
+        return {};
     }
     input_stream >> l_system;
     input_stream.close();
 
-
-//    krijg het begin string
+    // Generate the L-System string
     std::string lsystem_string = l_system.get_initiator();
-
-    for(unsigned int i = 0; i < l_system.get_nr_iterations() ; i++){
-        std::string nextString;
-        for(char c  : lsystem_string){
-//            kijk of het in het alfabet is want + en - mogen niet veranderen en die zitten dr niet in
-            if(l_system.get_alphabet().count(c)){
-//                vervang de string door de replacement string bij to te voegen
-                nextString +=  l_system.get_replacement(c);
-            } else{
-                // stel het karakter moet niet vervangen worden voeg het gewoon toe
-                // behoud dus tekens als + en -
-                nextString += c;
+    for (unsigned int i = 0; i < l_system.get_nr_iterations(); i++) {
+        std::string next;
+        for (char c : lsystem_string) {
+            if (l_system.get_alphabet().count(c)) {
+                next += l_system.get_replacement(c);
+            } else {
+                next += c;
             }
         }
-//        pas de volgende lsytsem aan naar de niuwe string
-        lsystem_string = nextString;
+        lsystem_string = next;
     }
 
+    // Draw lines from the string
+    Lines2D lines;
+    double x = 0, y = 0;
+    double currentAngle = l_system.get_starting_angle();
 
-//    een vector waar de lijn coordinaten worden opgeslagen
-    std::vector<Line2D> lines;
+    std::stack<std::pair<double, double>> positionStack;
+    std::stack<double> angleStack;
 
-//    de startposisites we beginnen in oorsprong (0,0)
-    double x = 0; double y = 0;
-//    starthoek
-    double startingAngle =  l_system.get_starting_angle();
-
-//     ga door elke character van lsystem string die gemaakt is hierboven
-//    currentangle zodat je bij draaien van hoeken niet startingangle aanpast
-    double currentAngle = startingAngle;
-    // maak een stack met waar je huidige positie en richting opslaat
-    std::stack<std::pair<double,double>> stackPositie; //positie x en y
-    std::stack<double> stackHuidigerichting;
-
-    for(char c : lsystem_string) {
-
+    for (char c : lsystem_string) {
         if (l_system.get_alphabet().count(c)) {
-            double angleInradialen = currentAngle * (M_PI / 180.0);
-
-            double newX = x + std::cos(angleInradialen);
-            double newY = y + std::sin(angleInradialen);
+            double radians = currentAngle * M_PI / 180.0;
+            double newX = x + std::cos(radians);
+            double newY = y + std::sin(radians);
 
             if (l_system.draw(c)) {
-                lines.push_back({x, y, newX, newY});
+                Line2D line;
+                line.p1 = {x, y};
+                line.p2 = {newX, newY};
+                line.color = lineColor;
+                lines.push_back(line);
             }
 
             x = newX;
             y = newY;
         } else if (c == '+') {
-//            als je + tegenkomt in de systemstrings dan vermeerdert de starangle met get angle dat 25 graden is
             currentAngle += l_system.get_angle();
         } else if (c == '-') {
-//            met de klok draaien
             currentAngle -= l_system.get_angle();
-        } else if (c == '('){
-            stackPositie.push({x, y});
-            stackHuidigerichting.push(currentAngle);
-        } else if ( c == ')'){
-            if(stackHuidigerichting.empty()|| stackPositie.empty()){
-                std::cerr << "stack is leeg"<< "\n";
+        } else if (c == '(') {
+            positionStack.push({x, y});
+            angleStack.push(currentAngle);
+        } else if (c == ')') {
+            if (!positionStack.empty() && !angleStack.empty()) {
+                x = positionStack.top().first;
+                y = positionStack.top().second;
+                currentAngle = angleStack.top();
+                positionStack.pop();
+                angleStack.pop();
+            } else {
+                std::cerr << "Stack is leeg bij ')'\n";
             }
-            std::pair<double,double> prevPosition = stackPositie.top();
-            x = prevPosition.first;
-            y = prevPosition.second;
-            stackPositie.pop();
-
-            currentAngle = stackHuidigerichting.top();
-            stackHuidigerichting.pop();
-
         }
-
     }
 
-    return draw2DLines(lines, size,bgColor,lineColor);
-
+    return lines;
 }
-
-
-
-
 
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
-    std::string type = configuration["General"]["type"].as_string_or_die();
-    int size = configuration["General"]["size"].as_int_or_default(500);
-    std::vector<double> bgColor = configuration["General"]["backgroundcolor"].as_double_tuple_or_default({255,255,255});
+    int size = configuration ["General"]["size"];
+    ini::DoubleTuple bg = configuration ["General"]["backgroundcolor"];
+    std::string type = configuration["General"]["type"];
+
+
+    Color backgroundColor;
+    backgroundColor.red = bg[0];
+    backgroundColor.green = bg[1];
+    backgroundColor.blue = bg[2];
+
 
     if (type == "2DLSystem") {
-        std::string filename = configuration["2DLSystem"]["inputfile"].as_string_or_die();
-        std::vector<double> lineColor = configuration["2DLSystem"]["color"].as_double_tuple_or_default({0,0,0});
-        return readl2Dlines(filename, size, bgColor, lineColor);
+        ini::DoubleTuple lc = configuration["2DLSystem"]["color"];
+        Lines2D lines = generate2DLines(configuration);
+        return draw2DLines(lines, size, backgroundColor);
     }
-    if(type == "line_drawings"){
+    else if (type == "Wireframe") {
 
-
+        Figures3D figures = generate3DFigures(configuration);
+        Lines2D lines = doProjection(figures);
+        return draw2DLines(lines, size, backgroundColor);
     }
 
-    return img::EasyImage();
+    return img::EasyImage(1,1);
 }
-
 
 
 
