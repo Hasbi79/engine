@@ -9,9 +9,6 @@
 #include "gegevenClasses/vector3d.h"
 
 
-
-
-
 class Color{
 public:
     double red;
@@ -46,11 +43,6 @@ public:
     std::vector<int> point_indexes;
 };
 
-
-
-
-
-
 class  Figure;
 typedef std::vector<Figure> Figures3D;
 
@@ -81,9 +73,6 @@ public:
 
 
 };
-
-
-
 
 
 #endif //L2D_H

@@ -6,7 +6,6 @@
 
 #include "cmath"
 
-
 Matrix Figure::scalefigure(const double scale) {
     Matrix scaleMatrix;
 
@@ -83,11 +82,9 @@ Matrix Figure::translatie_matrix(const Vector3D &vector) {
     return translatieMatrix;
 }
 
-
 Matrix Figure::computeMatrix(const double scale, const double angleX, const double angleY, const double angleZ, const Vector3D &vector, Matrix &eyePoint) {
     return scalefigure(scale) * rotateX(angleX) * rotateY(angleY) * rotateZ(angleZ) * translatie_matrix(vector) * eyePoint;
 }
-
 
 void Figure::applyTransformation(const Matrix &m) {
 
@@ -96,14 +93,11 @@ void Figure::applyTransformation(const Matrix &m) {
     }
 }
 
-
 void applyTransformationToFigures(Figures3D &figures, const Matrix &m) {
     for (auto & fig: figures) {
         fig.applyTransformation(m);
     }
 }
-
-
 
 Matrix Figure::eyePointTrans(const Vector3D &eyePoint) {
 

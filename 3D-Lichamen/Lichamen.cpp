@@ -3,7 +3,6 @@
 //
 
 #include "Lichamen.h"
-
 #include <complex>
 
 #ifndef M_PI
@@ -172,7 +171,7 @@ Figure Lichamen::createicosahedron() {
     return icosahedron;
 }
 
-Figure Lichamen::createSphere(const int &n) {
+Figure Lichamen::createSphere(const int  n) {
 
     Figure icosahedron = createicosahedron();
 
@@ -250,3 +249,9 @@ Figure Lichamen::createSphere(const int &n) {
     return sphere;
 
 }
+
+Figure Lichamen::createCone(const int n, const double h) {
+
+
+}
+

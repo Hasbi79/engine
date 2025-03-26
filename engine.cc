@@ -1,10 +1,8 @@
 #include "gegevenClasses/easy_image.h"
 #include "gegevenClasses/ini_configuration.h"
 
-
 #include <fstream>
 #include <iostream>
-
 
 #include <limits>
 #include "gegevenClasses/l_parser.h"
@@ -12,13 +10,13 @@
 #include "dataStructures.h"
 #include "algorithm"
 
-
-
 #include <string>
 #include "3D-lijntekening/Projection.h"
 
 #include "LSystem2D/LSystem2D.h"
 using namespace std;
+
+
 
 //declaratie van de methodes
 img::EasyImage draw2DLines(const Lines2D &lines, int size, const Color &backgroundColor);

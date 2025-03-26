@@ -21,7 +21,9 @@ class Lichamen {
     Figure createTetrahedron();
     Figure createOctahedron();
     Figure createicosahedron();
-    Figure createSphere(const int& n);
+    Figure createSphere(const int n);
+    Figure createCone(const int n, const double h);
+
 
 };
 
