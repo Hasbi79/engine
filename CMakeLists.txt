@@ -22,8 +22,12 @@ set(engine_sources
         gegevenClasses/vector3d.cc
         dataStructures.cpp
         dataStructures.h
-        Projection.cpp
-        Projection.h
+        3D-lijntekening/Projection.cpp
+        3D-lijntekening/Projection.h
+        LSystem2D/LSystem2D.cpp
+        LSystem2D/LSystem2D.h
+        3D-Lichamen/Lichamen.cpp
+        3D-Lichamen/Lichamen.h
 )
 
 ############################################################

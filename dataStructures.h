@@ -39,9 +39,10 @@ class Face
 public:
     Face() {}
 
-    explicit Face(const std::vector<int> &pointIndexes);
+    Face(const std::vector<int> &pointIndexes);
 
 public:
+
     std::vector<int> point_indexes;
 };
 
@@ -74,7 +75,7 @@ public:
                                  const Vector3D &vector,Matrix& eyePoint);
 
     Matrix eyePointTrans(const Vector3D& eyePoint);
-    static void eyePointHelpFunctiontoPolar(const Vector3D &point, double &theta, double &phi, double &r);
+    static void eyePointHelpFunctiontoPolar( const Vector3D &point, double &theta, double &phi, double &r);
 
     static void applyTransformationToFigures(Figures3D &figures, const Matrix &m);
 
