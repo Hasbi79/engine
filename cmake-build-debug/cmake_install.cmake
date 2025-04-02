@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/hassa/CLionProjects/engine
+# Install script for directory: /Users/hasbi/CLionProjects/engine
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/engine")
+  set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,29 +34,29 @@ endif()
 
 # Set path to fallback-tool for dependency-resolution.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/Program Files/JetBrains/CLion 2024.2.3/bin/mingw/bin/objdump.exe")
+  set(CMAKE_OBJDUMP "/Library/Developer/CommandLineTools/usr/bin/objdump")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "C:/Users/hassa/CLionProjects/engine/engine.exe")
+   "/Users/hasbi/CLionProjects/engine/engine")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "C:/Users/hassa/CLionProjects/engine" TYPE EXECUTABLE FILES "C:/Users/hassa/CLionProjects/engine/cmake-build-debug/engine.exe")
-  if(EXISTS "$ENV{DESTDIR}/C:/Users/hassa/CLionProjects/engine/engine.exe" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/C:/Users/hassa/CLionProjects/engine/engine.exe")
+  file(INSTALL DESTINATION "/Users/hasbi/CLionProjects/engine" TYPE EXECUTABLE FILES "/Users/hasbi/CLionProjects/engine/cmake-build-debug/engine")
+  if(EXISTS "$ENV{DESTDIR}/Users/hasbi/CLionProjects/engine/engine" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/Users/hasbi/CLionProjects/engine/engine")
     if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "C:/Program Files/JetBrains/CLion 2024.2.3/bin/mingw/bin/strip.exe" "$ENV{DESTDIR}/C:/Users/hassa/CLionProjects/engine/engine.exe")
+      execute_process(COMMAND "/Library/Developer/CommandLineTools/usr/bin/strip" -u -r "$ENV{DESTDIR}/Users/hasbi/CLionProjects/engine/engine")
     endif()
   endif()
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  include("C:/Users/hassa/CLionProjects/engine/cmake-build-debug/CMakeFiles/engine.dir/install-cxx-module-bmi-Debug.cmake" OPTIONAL)
+  include("/Users/hasbi/CLionProjects/engine/cmake-build-debug/CMakeFiles/engine.dir/install-cxx-module-bmi-Debug.cmake" OPTIONAL)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -74,6 +74,6 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-  file(WRITE "C:/Users/hassa/CLionProjects/engine/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/Users/hasbi/CLionProjects/engine/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

@@ -14,16 +14,13 @@
 #include "3D-lijntekening/Projection.h"
 
 #include "LSystem2D/LSystem2D.h"
+#include "3D-Lichamen/Lichamen.h"
 using namespace std;
-
-
 
 //declaratie van de methodes
 img::EasyImage draw2DLines(const Lines2D &lines, int size, const Color &backgroundColor);
 Lines2D generate2DLines(const ini::Configuration &configuration);
 Figures3D generate3DFigures(const ini::Configuration & configuration);
-
-
 
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
@@ -31,12 +28,10 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
     ini::DoubleTuple bg = configuration ["General"]["backgroundcolor"];
     std::string type = configuration["General"]["type"];
 
-
     Color backgroundColor;
     backgroundColor.red = bg[0];
     backgroundColor.green = bg[1];
     backgroundColor.blue = bg[2];
-
 
     if (type == "2DLSystem") {
         ini::DoubleTuple lc = configuration["2DLSystem"]["color"];
@@ -44,15 +39,23 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
         return draw2DLines(lines, size, backgroundColor);
     }
     else if (type == "Wireframe") {
+        // Combineer 3D Lichamen + Lijntekeningen
+        Figures3D figures;
 
-        Figures3D figures = generate3DFigures(configuration);
+        // Voeg lichamen toe indien het type bekend is
+        Figures3D lichaamsfiguren = Lichamen().generate3DLichamen(configuration);
+        figures.insert(figures.end(), lichaamsfiguren.begin(), lichaamsfiguren.end());
+
+        // Voeg lijntekeningen toe indien figuren zonder type voorkomen
+        Figures3D lijntekeningen = generate3DFigures(configuration);
+        figures.insert(figures.end(), lijntekeningen.begin(), lijntekeningen.end());
+
         Lines2D lines = doProjection(figures);
         return draw2DLines(lines, size, backgroundColor);
     }
 
     return img::EasyImage(1,1);
 }
-
 
 
 

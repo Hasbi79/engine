@@ -31,16 +31,14 @@ public:
 
 using Lines2D = std::vector<Line2D>;
 
-class Face
-{
-public:
-    Face() {}
-
-    Face(const std::vector<int> &pointIndexes);
-
-public:
-
+struct Face {
     std::vector<int> point_indexes;
+
+    // Voeg deze constructor toe:
+    Face() = default;
+
+    Face(const std::vector<int>& indexes)
+            : point_indexes(indexes) {}
 };
 
 class  Figure;

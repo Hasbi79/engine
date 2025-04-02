@@ -5,44 +5,19 @@
 #include "Projection.h"
 
 
-Point2D doProjection(const Vector3D &point, double d) {
-    d = 1;
-    Point2D ProjectedPoint;
-    ProjectedPoint.x = (d*point.x)/-point.z;
-    ProjectedPoint.y = (d*point.y)/-point.z;
-    return ProjectedPoint;
-}
-Lines2D doProjection(const Figures3D &figs) {
-    Lines2D lines;
-
-    for (const auto &fig : figs) {
-        for (const auto &face : fig.faces) {
-            if (face.point_indexes.size() < 2) continue;
-
-            Point2D point1 = doProjection(fig.points[face.point_indexes[0]], 1.0);
-            Point2D point2 = doProjection(fig.points[face.point_indexes[1]], 1.0);
-
-            Line2D line;
-            line.p1 = point1;
-            line.p2 = point2;
-            line.color = fig.color;
-
-            lines.push_back(line);
-        }
-    }
-    return lines;
-}
-
 Figures3D generate3DFigures(const ini::Configuration & configuration) {
 
     Figures3D figures;
     vector<double> eyeValues = configuration["General"]["eye"].as_double_tuple_or_die();
     Vector3D eye = Vector3D::point(eyeValues[0],eyeValues[1],eyeValues[2]);
-      Figure figure;
+    Figure figure;
     int nrFigures = configuration["General"]["nrFigures"].as_int_or_die();
     for (int i = 0; i < nrFigures; i++) {
 
         string figureName = "Figure" + to_string(i);
+
+        std::string type = configuration[figureName]["type"].as_string_or_default("");
+        if (type != "LineDrawing") continue;
 
         double rotateX = configuration[figureName]["rotateX"].as_double_or_die();
         double rotateY = configuration[figureName]["rotateY"].as_double_or_die();
@@ -92,4 +67,42 @@ Figures3D generate3DFigures(const ini::Configuration & configuration) {
 
     return figures;
 
+}
+
+
+
+
+Point2D doProjection(const Vector3D &point, double d) {
+    d = 1;
+    Point2D ProjectedPoint;
+    ProjectedPoint.x = (d*point.x)/-point.z;
+    ProjectedPoint.y = (d*point.y)/-point.z;
+    return ProjectedPoint;
+}
+Lines2D doProjection(const Figures3D &figs) {
+    Lines2D lines;
+
+    for (const auto &fig : figs) {
+        for (const auto &face : fig.faces) {
+            int n = face.point_indexes.size();
+            if (n < 2) continue;
+
+            for (int i = 0; i < n; i++) {
+                int index1 = face.point_indexes[i];
+                int index2 = face.point_indexes[(i + 1) % n]; // sluit het vlak
+
+                Point2D p1 = doProjection(fig.points[index1], 1.0);
+                Point2D p2 = doProjection(fig.points[index2], 1.0);
+
+                Line2D line;
+                line.p1 = p1;
+                line.p2 = p2;
+                line.color = fig.color;
+
+                lines.push_back(line);
+            }
+        }
+    }
+
+    return lines;
 }

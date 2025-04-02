@@ -19,10 +19,10 @@ Matrix Figure::scalefigure(const double scale) {
 
 Matrix Figure::rotateX(const double angle) {
     Matrix rotateMatrixX;
-
-    double cosinusAngle = cos(angle);
-    double sinusAngle = sin(angle);
-    double minusSinusAngle = -sin(angle);
+    const double rad = angle * M_PI / 180.0;
+    double cosinusAngle = cos(rad);
+    double sinusAngle = sin(rad);
+    double minusSinusAngle = -sin(rad);
 
     rotateMatrixX(1,1) = 1;
     rotateMatrixX(2,2) = cosinusAngle;
@@ -36,10 +36,10 @@ Matrix Figure::rotateX(const double angle) {
 
 Matrix Figure::rotateY(const double angle) {
     Matrix rotateMatrixy;
-
-    double cosinusAngle = cos(angle);
-    double sinusAngle = sin(angle);
-    double minusSinusAngle = -sin(angle);
+    const double rad = angle * M_PI / 180.0;
+    double cosinusAngle = cos(rad);
+    double sinusAngle = sin(rad);
+    double minusSinusAngle = -sin(rad);
 
     rotateMatrixy(1,1) = cosinusAngle;
     rotateMatrixy(1,3) = minusSinusAngle;
@@ -53,9 +53,10 @@ Matrix Figure::rotateY(const double angle) {
 Matrix Figure::rotateZ(const double angle) {
     Matrix rotateMatrixZ;
 
-    double cosinusAngle = cos(angle);
-    double sinusAngle = sin(angle);
-    double minusSinusAngle = -sin(angle);
+    const double rad = angle * M_PI / 180.0;
+    double cosinusAngle = cos(rad);
+    double sinusAngle = sin(rad);
+    double minusSinusAngle = -sin(rad);
 
     rotateMatrixZ(1,1) = cosinusAngle;
     rotateMatrixZ(1,2) = sinusAngle;
